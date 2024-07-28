@@ -5,3 +5,7 @@ TOKYO_VISOR_MOD_README="Readme";
 
 TOKYO_VISOR_CONTROL_TITLE_VISION_ACTIVE="Toggle Tokyo Visor on/off";
 TOKYO_VISOR_CONTROL_TITLE_VISION_MODE="Toggle Tokyo Visor mode";
+
+TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_NIGHTVISION="Quick Switch to Night Vision and turn Visor on, tap again to turn off";
+TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_MOTIONVISION="Quick Switch to Motion Vision and turn Visor on, tap again to turn off";
+TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_THERMALVISION="Quick Switch to Thermal Vision and turn Visor on, tap again to turn off";

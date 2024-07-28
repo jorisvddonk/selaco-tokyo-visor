@@ -9,12 +9,21 @@ class TV_VisorItem : Inventory {
 	bool visorActive;
 	int visorMode; // 0:
 
+    void TurnVisorOn() {
+        visorActive = true;
+        A_PLAYSOUND("tv_visor_on", CHAN_AUTO, 3.0, 0, ATTN_NONE, pitch:1.4);
+    }
+
+    void TurnVisorOff() {
+        visorActive = false;
+        A_PLAYSOUND("tv_visor_off", CHAN_AUTO, 3.0, 0, ATTN_NONE, pitch:0.8);
+    }
+
     void ToggleVisor() {
-        visorActive = !visorActive;
         if (visorActive) {
-            A_PLAYSOUND("tv_visor_on", CHAN_AUTO, 3.0, 0, ATTN_NONE, pitch:1.4);
+            TurnVisorOff();
         } else {
-            A_PLAYSOUND("tv_visor_off", CHAN_AUTO, 3.0, 0, ATTN_NONE, pitch:0.8);
+            TurnVisorOn();
         }
     }
 
@@ -23,6 +32,32 @@ class TV_VisorItem : Inventory {
         if (visorMode == 3) {
             visorMode = TV_NIGHTVISION;
         }
+        PlayChangeSound();
+    }
+
+    void PlayChangeSound() {
         A_PLAYSOUND("tv_visor_change", CHAN_AUTO, 2.5, 0, ATTN_NONE, pitch:1.2);
+    }
+
+    void SetOrToggleVisorMode(int mode) {
+        if (!visorActive) {
+            // visor is off, turn it on!
+            TurnVisorOn();
+            if (visorMode != mode) {
+                // visor not on the correct mode, so switch it!
+                // no need to make another sound here!
+                visorMode = mode;
+            }
+        } else {
+            // Visor is already on..
+            if (visorMode != mode) {
+                // visor not on the correct mode, so switch it!
+                visorMode = mode;
+                PlayChangeSound();
+            } else {
+                // visor was already active AND on the correct mode, so turn it off.
+                TurnVisorOff();
+            }
+        }
     }
 }

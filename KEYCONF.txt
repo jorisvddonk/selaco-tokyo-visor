@@ -1,5 +1,16 @@
 addkeysection "Tokyo Visor" TokyoVisor
+
 alias tv_togglevisor "netevent TV_ToggleVisor"
 addmenukey "toggle visor" "tv_togglevisor"
+
 alias tv_changevisormode "netevent TV_ChangeVisorMode"
 addmenukey "change visor mode" "tv_changevisormode"
+
+alias tv_smart_toggle_nightvision "netevent TV_SmartToggle_NightVision"
+addmenukey "quick switch to Night Vision or turn visor off" "tv_smart_toggle_nightvision"
+
+alias tv_smart_toggle_motionvision "netevent TV_SmartToggle_MotionVision"
+addmenukey "quick switch to Motion Vision or turn visor off" "tv_smart_toggle_motionvision"
+
+alias tv_smart_toggle_thermalvision "netevent TV_SmartToggle_ThermalVision"
+addmenukey "quick switch to Thermal Vision or turn visor off" "tv_smart_toggle_thermalvision"

@@ -1,26 +1,60 @@
 class TV_NetEventHandler : StaticEventHandler {
+
+    TV_VisorItem getVisor(ConsoleEvent e) {
+        PlayerPawn pawn = players[e.player].mo;
+        let d = Dawn(pawn);
+        if((d) && d.countInv("TV_VisorItem") > 0) {
+            TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
+            return visor;
+        }
+        return null;
+    }
    
     override void NetworkProcess(ConsoleEvent e) {
         // Toggle Visor
         if(e.name == "TV_ToggleVisor") {
-            PlayerPawn pawn = players[e.player].mo;
-			let d = Dawn(pawn);
-            if((d) && d.countInv("TV_VisorItem") > 0) {
-				TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
-				visor.ToggleVisor();
+            TV_VisorItem visor = getVisor(e);
+            if (visor) {
+                visor.ToggleVisor();
             }
             return;
         }
 
         // Change Visor Mode
         if(e.name == "TV_ChangeVisorMode") {
-            PlayerPawn pawn = players[e.player].mo;
-			let d = Dawn(pawn);
-            if((d) && d.countInv("TV_VisorItem") > 0) {
-				TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
-				visor.ChangeVisorMode();
+            TV_VisorItem visor = getVisor(e);
+            if (visor) {
+                visor.ChangeVisorMode();
             }
             return;
         }
+
+        // Smart Switch to Night Vision
+        if(e.name == "TV_SmartToggle_NightVision") {
+            TV_VisorItem visor = getVisor(e);
+            if (visor) {
+                visor.SetOrToggleVisorMode(0);
+            }
+            return;
+        }
+
+        // Smart Switch to Motion Vision
+        if(e.name == "TV_SmartToggle_MotionVision") {
+            TV_VisorItem visor = getVisor(e);
+            if (visor) {
+                visor.SetOrToggleVisorMode(1);
+            }
+            return;
+        }
+
+        // Smart Switch to Thermal Vision
+        if(e.name == "TV_SmartToggle_ThermalVision") {
+            TV_VisorItem visor = getVisor(e);
+            if (visor) {
+                visor.SetOrToggleVisorMode(2);
+            }
+            return;
+        }
+        
     }
 }
