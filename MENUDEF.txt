@@ -1,6 +1,6 @@
 AddOptionMenu "ModOptionsMenu"
 {
-    ModHeader "Tokyo Visor", "@jorisvddonk", "$TOKYO_VISOR_MOD_DESCRIPTION", "TOKYOLOGO", "$TOKYO_VISOR_MOD_README"
+    ModHeader "Tokyo Visor", "@jorisvddonk", "$TOKYO_VISOR_MOD_DESCRIPTION", "TVLOGO", "$TOKYO_VISOR_MOD_README"
     Submenu "Tokyo Visor Options", "TokyoVisorOptions"
 }
 
