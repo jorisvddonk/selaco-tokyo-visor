@@ -11,6 +11,11 @@ class TV_VisorItem : Inventory {
 
     void ToggleVisor() {
         visorActive = !visorActive;
+        if (visorActive) {
+            A_PLAYSOUND("tv_visor_on", CHAN_AUTO, 3.0, 0, ATTN_NONE, pitch:1.4);
+        } else {
+            A_PLAYSOUND("tv_visor_off", CHAN_AUTO, 3.0, 0, ATTN_NONE, pitch:0.8);
+        }
     }
 
     void ChangeVisorMode() {
@@ -18,5 +23,6 @@ class TV_VisorItem : Inventory {
         if (visorMode == 3) {
             visorMode = TV_NIGHTVISION;
         }
+        A_PLAYSOUND("tv_visor_change", CHAN_AUTO, 2.5, 0, ATTN_NONE, pitch:1.2);
     }
 }

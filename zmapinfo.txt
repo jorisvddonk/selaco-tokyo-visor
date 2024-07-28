@@ -1,4 +1,5 @@
 GameInfo
 {
 	AddEventHandlers = "TV_Hudhandler", "TV_MonsterModifier", "TV_NetEventHandler"
+	PrecacheSounds = "tv_visor_on", "tv_visor_off"
 }
