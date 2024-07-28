@@ -1,21 +1,70 @@
 class TV_MonsterModifier : EventHandler {
+
+	/**
+	Add a TV_Actor_VFX_Updater inventory item to a Thing, and check some preconditions.
+	*/
+	void addVFXUpdater(Actor thing, bool trackMovement, bool trackThermal, float heat, float heatLoss) {
+		if (thing.GetRenderStyle() == STYLE_NONE) {
+			console.printf("WARN (TokyoVisor): %s has STYLE_NONE RenderStyle, which is not supported by TV_Actor_VFX_Updater; not adding TV_Actor_VFX_Updater!", thing.GetClassName());
+			return;
+		}
+		thing.GiveInventory('TV_Actor_VFX_Updater', 1);
+		let updater = TV_Actor_VFX_Updater(thing.FindInventory('TV_Actor_VFX_Updater'));
+		if (updater) {
+			updater.trackMovement = trackMovement;
+			updater.trackThermal = trackThermal;
+			updater.heat = heat;
+			updater.heatLoss = heatLoss;
+		} else {
+			console.printf("WARN (TokyoVisor): cannot find VFX updater inventory anymore on %s !?!?!?", thing.GetClassName());
+		}
+	}
+
 	override void WorldThingSpawned(WorldEvent e) {
 		if(!e.Thing) { return; }
 
-		if(e.Thing.CheckClass('SelacoEnemy', AAPTR_DEFAULT, true)) {
-			e.Thing.GiveInventory('TV_Actor_VFX_Updater', 1); // update VFX
+		// movement with persistent heat signatures:
+		if(!e.Thing.CheckClass('GrenadeDestination', AAPTR_DEFAULT, true) && (
+			e.Thing.CheckClass('SelacoEnemy', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('BurningCivilian', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('CarFire', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('MegaFire', AAPTR_DEFAULT, true)
+		)) {
+			addVFXUpdater(e.thing, true, true, 1.0, 0.0);
 			return;
 		}
 
-		if(!e.Thing.CheckClass('SuperGorePurple', AAPTR_DEFAULT, true) && (e.Thing.CheckClass('GoreMaster', AAPTR_DEFAULT, true))) {
-			e.Thing.GiveInventory('TV_Actor_VFX_Updater', 1); // update VFX
-			console.printf("Adding gibber %s", e.thing.GetClassName());
-			let updater = TV_Actor_VFX_Updater(e.Thing.FindInventory('TV_Actor_VFX_Updater'));
-			if (updater) {
-				updater.heatLoss = 0.001;
-			} else {
-				console.printf("WARN (TokyoVisor): cannot find VFX updater inventory anymore on %s !?!?!?", e.thing.GetClassName());
-			}
+		// no movement tracking, persistent heat signatures:
+		if(e.Thing.CheckClass('CarFire', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('MegaFire', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('FireActor', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('ExplosionParticleHeavy', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('ExplosionEffect', AAPTR_DEFAULT, true)) {
+			addVFXUpdater(e.thing, false, true, 1.0, 0.0);
+			return;
+		}
+
+		// movement tracking with heat signatures that lose temperature over time:
+		if(!e.Thing.CheckClass('SuperGorePurple', AAPTR_DEFAULT, true) && 
+				(e.Thing.CheckClass('GoreMaster', AAPTR_DEFAULT, true)
+				|| e.Thing.CheckClass('FlameParticle', AAPTR_DEFAULT, true))) {
+			addVFXUpdater(e.thing, true, true, 1.0, 0.001);
+			return;
+		}
+
+		// movement tracking with NO heat signatures
+		// TODO: check why STYLE_TranslucentStencil doesn't work for PlasmaProjectile / PlasmaProjectileEnemy
+		if(!e.Thing.CheckClass('PlasmaProjectile', AAPTR_DEFAULT, true) && (
+			e.Thing.CheckClass('AlienTracer', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SelacoTracer', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SentryGunTurretRocket', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('RedPlasmaParticleSpawner', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('GreenPlasmaParticleSpawner', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('BluePlasmaParticleSpawner', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('EnemyTracerShotgun', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('EnemyTracer', AAPTR_DEFAULT, true)
+			)) {
+			addVFXUpdater(e.thing, true, false, 0.0, 0.0);
 			return;
 		}
 
@@ -24,21 +73,38 @@ class TV_MonsterModifier : EventHandler {
 			return;
 		}
 
+		// effects that are hidden on Thermal/Motion, to improve accuracy of the shader effect
 		if (e.Thing.CheckClass('SelacoSmoke', AAPTR_DEFAULT, true) 
 		    || e.Thing.CheckClass('ExplosionSmoke', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('WallShrapnel', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('SteamParticle', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('ImpactEffect', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('BulletImpactSmoke', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('Ricochet', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('VentilationSmoke', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('AlienMuzzle', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('Flare_General', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('flareRedMuzzleFlash', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SparkEffect', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SelacoLightEffect', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('LightShaftMaster', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('SelacoParticle', AAPTR_DEFAULT, true)) {
-			// hide these effects if Thermal is active
 			e.Thing.GiveInventory('TV_ConditionalEffectHider', 1);
+			// don't need to call checkThing() here, as TV_ConditionalEffectHider supports falling back to the original renderstyle
 			return;
 		} 
 
 		// DEBUG: print the class of whatever's left!
+		/*
+		if (e.Thing.CheckClass('RestorePowerup', AAPTR_DEFAULT, true) 
+		    || e.Thing.CheckClass('PowerSpeed', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('AimingCamera', AAPTR_DEFAULT, true)) {
+			// IGNORE
+			return;
+		}
 		if (!(e.Thing.CheckClass('TV_ConditionalEffectHider', AAPTR_DEFAULT, true) || e.Thing.CheckClass('TV_Actor_VFX_Updater', AAPTR_DEFAULT, true))) {
 			console.printf("%s", e.thing.GetClassName());
 		}
+		*/
 	}
 }

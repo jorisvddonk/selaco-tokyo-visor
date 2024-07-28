@@ -21,19 +21,27 @@ class TV_ConditionalEffectHider : Inventory
 			bool motionvision_enabled = visor.visorActive && visor.visorMode == TV_MOTIONVISION;
 			bool thermalvision_enabled = visor.visorActive && visor.visorMode == TV_THERMALVISION;
 
-			/*//to debug:
-				console.printf("TICK() ON SOME WALL STUFF: %s", owner.getClassName());
-				owner.A_SetRenderStyle(1.0, STYLE_STENCIL);
-				owner.setShade(Color(255,255,0));
-				owner.bBright = true;
-			*/
-
-
 			if (!visor.visorActive || nightvision_enabled) {
 				owner.bBright = false; // TODO: properly reset / determine elsewhere?
 				owner.A_SetRenderStyle(1.0, prevstyle);
 				owner.A_SETSCALE(prevscalex, prevscaley);
 				owner.alpha = prevalpha;
+				return Super.Tick();
+			}
+
+			if (motionvision_enabled) {
+				if (owner.CheckClass('WallShrapnel', AAPTR_DEFAULT, true)
+				    || owner.CheckClass('ImpactEffect', AAPTR_DEFAULT, true)
+					|| owner.CheckClass('SelacoParticle', AAPTR_DEFAULT, true)) {
+					// wall shrapnel moves, so highlight it!
+					owner.A_SetRenderStyle(1.0, STYLE_STENCIL);
+					owner.SetShade(Color(0, 255, 0));
+					owner.bBright = true;
+				} else {
+					// otherwise hide the effect
+					owner.A_SetRenderStyle(1.0, STYLE_NONE);
+					owner.bBright = false;
+				}
 				return Super.Tick();
 			}
 
