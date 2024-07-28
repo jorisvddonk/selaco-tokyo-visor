@@ -8,6 +8,7 @@ class TV_MonsterModifier : EventHandler {
 			console.printf("WARN (TokyoVisor): %s has STYLE_NONE RenderStyle, which is not supported by TV_Actor_VFX_Updater; not adding TV_Actor_VFX_Updater!", thing.GetClassName());
 			return;
 		}
+		console.printf("DEBUG (TokyoVisor): Adding VFX updater to %s", thing.GetClassName());
 		thing.GiveInventory('TV_Actor_VFX_Updater', 1);
 		let updater = TV_Actor_VFX_Updater(thing.FindInventory('TV_Actor_VFX_Updater'));
 		if (updater) {
@@ -24,8 +25,14 @@ class TV_MonsterModifier : EventHandler {
 		if(!e.Thing) { return; }
 
 		// movement with persistent heat signatures:
-		if(!e.Thing.CheckClass('GrenadeDestination', AAPTR_DEFAULT, true) && (
-			e.Thing.CheckClass('SelacoEnemy', AAPTR_DEFAULT, true)
+		if(!e.Thing.CheckClass('GrenadeDestination', AAPTR_DEFAULT, true)
+		 && !e.Thing.CheckClass('SentryGunTurret', AAPTR_DEFAULT, true)
+		 && !e.Thing.CheckClass('SentryGunAlien', AAPTR_DEFAULT, true)
+		 && !e.Thing.CheckClass('SentryGunAlienTurret', AAPTR_DEFAULT, true)
+		 && !e.Thing.CheckClass('SentryGunTurretRocket', AAPTR_DEFAULT, true)
+		 && !e.Thing.CheckClass('CrawlerMine', AAPTR_DEFAULT, true)
+		 && !e.Thing.CheckClass('Sawdrone', AAPTR_DEFAULT, true)
+		 && (e.Thing.CheckClass('SelacoEnemy', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('BurningCivilian', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('CarFire', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('MegaFire', AAPTR_DEFAULT, true)
@@ -56,6 +63,12 @@ class TV_MonsterModifier : EventHandler {
 		// TODO: check why STYLE_TranslucentStencil doesn't work for PlasmaProjectile / PlasmaProjectileEnemy
 		if(!e.Thing.CheckClass('PlasmaProjectile', AAPTR_DEFAULT, true) && (
 			e.Thing.CheckClass('AlienTracer', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SentryGunTurret', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SentryGunAlien', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SentryGunAlienTurret', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SentryGunTurretRocket', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('CrawlerMine', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('Sawdrone', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('SelacoTracer', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('SentryGunTurretRocket', AAPTR_DEFAULT, true)
 			|| e.Thing.CheckClass('RedPlasmaParticleSpawner', AAPTR_DEFAULT, true)
