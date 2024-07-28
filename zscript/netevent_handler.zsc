@@ -1,0 +1,26 @@
+class TV_NetEventHandler : StaticEventHandler {
+   
+    override void NetworkProcess(ConsoleEvent e) {
+        // Toggle Visor
+        if(e.name == "TV_ToggleVisor") {
+            PlayerPawn pawn = players[e.player].mo;
+			let d = Dawn(pawn);
+            if((d) && d.countInv("TV_VisorItem") > 0) {
+				TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
+				visor.ToggleVisor();
+            }
+            return;
+        }
+
+        // Change Visor Mode
+        if(e.name == "TV_ChangeVisorMode") {
+            PlayerPawn pawn = players[e.player].mo;
+			let d = Dawn(pawn);
+            if((d) && d.countInv("TV_VisorItem") > 0) {
+				TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
+				visor.ChangeVisorMode();
+            }
+            return;
+        }
+    }
+}

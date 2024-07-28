@@ -1,0 +1,24 @@
+Class TV_Hudhandler : EventHandler
+{
+    override void RenderOverlay(RenderEvent e)
+    {
+        PlayerInfo p = players[consoleplayer];
+		PlayerPawn pawn = p.mo;
+		let d = Dawn(pawn);
+		if((d) && d.countInv("TV_VisorItem") > 0) {
+			TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
+		
+			bool nightvision_enabled = visor.visorActive && visor.visorMode == TV_NIGHTVISION;
+			bool motionvision_enabled = visor.visorActive && visor.visorMode == TV_MOTIONVISION;
+			bool thermalvision_enabled = visor.visorActive && visor.visorMode == TV_THERMALVISION;
+
+            Shader.SetUniform1f(players[consoleplayer], "Nightvision", "timer", gametic);
+            Shader.SetUniform1f(players[consoleplayer], "Motionvision", "timer", gametic);
+            Shader.SetUniform1f(players[consoleplayer], "Thermalvision", "timer", gametic);
+
+            Shader.SetEnabled(players[consoleplayer], "Nightvision", nightvision_enabled);
+            Shader.SetEnabled(players[consoleplayer], "Motionvision", motionvision_enabled);
+            Shader.SetEnabled(players[consoleplayer], "Thermalvision", thermalvision_enabled);
+        }
+    }
+}

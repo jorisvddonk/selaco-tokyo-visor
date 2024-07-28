@@ -1,0 +1,4 @@
+GameInfo
+{
+	AddEventHandlers = "TV_Hudhandler", "TV_MonsterModifier", "TV_NetEventHandler"
+}

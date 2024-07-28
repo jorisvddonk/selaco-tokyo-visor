@@ -1,0 +1,7 @@
+[enu default]
+
+TOKYO_VISOR_MOD_DESCRIPTION="Tokyo Visor augments Dawn's vision for maximum performance in all combat situations. Inspired by the 2009 HL2 mod NEOTOKYO°.";
+TOKYO_VISOR_MOD_README="Readme";
+
+TOKYO_VISOR_CONTROL_TITLE_VISION_ACTIVE="Toggle Tokyo Visor on/off";
+TOKYO_VISOR_CONTROL_TITLE_VISION_MODE="Toggle Tokyo Visor mode";

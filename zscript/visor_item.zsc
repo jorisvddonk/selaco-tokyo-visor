@@ -1,0 +1,22 @@
+enum TV_VisorMode 
+{
+	TV_NIGHTVISION = 0,
+	TV_MOTIONVISION = 1,
+    TV_THERMALVISION = 2
+};
+
+class TV_VisorItem : Inventory {
+	bool visorActive;
+	int visorMode; // 0:
+
+    void ToggleVisor() {
+        visorActive = !visorActive;
+    }
+
+    void ChangeVisorMode() {
+        visorMode += 1;
+        if (visorMode == 3) {
+            visorMode = TV_NIGHTVISION;
+        }
+    }
+}

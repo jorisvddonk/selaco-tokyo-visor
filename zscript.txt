@@ -1,0 +1,8 @@
+version "3.5"
+
+#include "zscript/visionmodes.zsc"
+#include "zscript/visor_item.zsc"
+#include "zscript/monster_modifier.zsc"
+#include "zscript/netevent_handler.zsc"
+#include "zscript/actor_vfx_updater.zsc"
+#include "zscript/conditional_effect_hider.zsc"

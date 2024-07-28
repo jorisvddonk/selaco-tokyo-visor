@@ -1,0 +1,59 @@
+class TV_ConditionalEffectHider : Inventory
+{
+	int prevstyle;
+    float prevalpha;
+    float prevscalex;
+    float prevscaley;
+
+	default {
+		Inventory.MaxAmount 1;
+		+INVENTORY.PERSISTENTPOWER;
+	}
+
+	override void Tick() {
+		PlayerInfo p = players[consoleplayer];
+		PlayerPawn pawn = p.mo;
+		let d = Dawn(pawn);
+		if((d) && d.countInv("TV_VisorItem") > 0) {
+			TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
+		
+			bool nightvision_enabled = visor.visorActive && visor.visorMode == TV_NIGHTVISION;
+			bool motionvision_enabled = visor.visorActive && visor.visorMode == TV_MOTIONVISION;
+			bool thermalvision_enabled = visor.visorActive && visor.visorMode == TV_THERMALVISION;
+
+			/*//to debug:
+				console.printf("TICK() ON SOME WALL STUFF: %s", owner.getClassName());
+				owner.A_SetRenderStyle(1.0, STYLE_STENCIL);
+				owner.setShade(Color(255,255,0));
+				owner.bBright = true;
+			*/
+
+
+			if (!visor.visorActive || nightvision_enabled) {
+				owner.bBright = false; // TODO: properly reset / determine elsewhere?
+				owner.A_SetRenderStyle(1.0, prevstyle);
+				owner.A_SETSCALE(prevscalex, prevscaley);
+				owner.alpha = prevalpha;
+				return Super.Tick();
+			}
+
+			if (thermalvision_enabled) {
+				owner.A_SetRenderStyle(0.01, STYLE_TRANSLUCENT);
+				owner.A_SETSCALE(0.01);
+				owner.alpha = 0.01;
+				return Super.Tick();
+			}
+		}
+	}
+
+	override void PostBeginPlay()
+	{
+		prevstyle = owner.GetRenderStyle();
+        prevalpha = owner.alpha;
+        prevscalex = owner.scale.x;
+        prevscaley = owner.scale.y;
+        Tick();
+	}
+
+}
+	

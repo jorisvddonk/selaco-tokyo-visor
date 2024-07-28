@@ -1,0 +1,86 @@
+class TV_Actor_VFX_Updater : Inventory
+{
+	/**
+	Updates VFX of enemies and giblets depending on the currently active vision mode.
+	ASSUMPTION: there are no enemies with bBright set to true by default
+	ASSUMPTION: actors that receive this inventory item have render style set to STYLE_Normal (I tried capturing the previous style on PostBeginPlay and then resetting it at the end, but that was somehow buggy!!!
+	*/
+	Vector3 prevpos;
+	float prevspd;
+	int i;
+	float heat;
+	float heatLoss;
+
+	default {
+		Inventory.MaxAmount 1;
+		+INVENTORY.PERSISTENTPOWER;
+	}
+
+	void ResetVFX() {
+		owner.bBright = false;
+		owner.A_SetRenderStyle(1.0, STYLE_Normal);
+	}
+
+	override void Tick() {
+		heat = heat - heatLoss;
+		if (heat < 0.0) {
+			heat = 0.0;
+		}
+
+		PlayerInfo p = players[consoleplayer];
+		PlayerPawn pawn = p.mo;
+		let d = Dawn(pawn);
+		if((d) && d.countInv("TV_VisorItem") > 0) {
+			TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
+		
+			bool nightvision_enabled = visor.visorActive && visor.visorMode == TV_NIGHTVISION;
+			bool motionvision_enabled = visor.visorActive && visor.visorMode == TV_MOTIONVISION;
+			bool thermalvision_enabled = visor.visorActive && visor.visorMode == TV_THERMALVISION;
+
+			if (!visor.visorActive || nightvision_enabled) {
+				self.ResetVFX();
+				return;
+			}
+
+			if (motionvision_enabled) {
+				owner.bBright = false; // TODO: properly reset / determine elsewhere?
+				owner.A_SetRenderStyle(1.0, STYLE_STENCIL);
+
+				float spd = abs(((owner.Pos.x - prevpos.x) * (owner.Pos.x - prevpos.x)) + ((owner.Pos.y - prevpos.y) * (owner.Pos.y - prevpos.y)) + ((owner.Pos.z - prevpos.z) * (owner.Pos.z - prevpos.z)));
+				spd = min(spd, 2000.0);
+				spd = (prevspd * 0.8) + (spd * 3.0);
+				int x = max(72, min(int(spd), 255));
+				if (i > 3)
+				{
+					owner.SetShade(Color(x, x, x)); // TODO: reset this??
+					i = 0;
+				}
+				i = i + 1;
+				prevpos = owner.Pos;
+				prevspd = spd;
+				return;
+			}
+
+			if (thermalvision_enabled) {
+				if (heat <= 0.01) {
+					self.ResetVFX();
+				} else {
+					// TODO: don't do any of this for invisible monsters!?
+					owner.bBright = true;
+					owner.A_SetRenderStyle(1.0, STYLE_STENCIL);
+					float l = 200 * (1.0 - heat);
+					owner.setShade(Color(int(255 - l),int(255 - l),0));
+					return;
+				}
+			}
+		}
+	}
+
+	override void PostBeginPlay()
+	{
+		heat = 1.0;
+		prevspd = 0.0;
+		i = 0;
+	}
+}
+	

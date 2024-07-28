@@ -1,0 +1,44 @@
+class TV_MonsterModifier : EventHandler {
+	override void WorldThingSpawned(WorldEvent e) {
+		if(!e.Thing) { return; }
+
+		if(e.Thing.CheckClass('SelacoEnemy', AAPTR_DEFAULT, true)) {
+			e.Thing.GiveInventory('TV_Actor_VFX_Updater', 1); // update VFX
+			return;
+		}
+
+		if(!e.Thing.CheckClass('SuperGorePurple', AAPTR_DEFAULT, true) && (e.Thing.CheckClass('GoreMaster', AAPTR_DEFAULT, true))) {
+			e.Thing.GiveInventory('TV_Actor_VFX_Updater', 1); // update VFX
+			console.printf("Adding gibber %s", e.thing.GetClassName());
+			let updater = TV_Actor_VFX_Updater(e.Thing.FindInventory('TV_Actor_VFX_Updater'));
+			if (updater) {
+				updater.heatLoss = 0.001;
+			} else {
+				console.printf("WARN (TokyoVisor): cannot find VFX updater inventory anymore on %s !?!?!?", e.thing.GetClassName());
+			}
+			return;
+		}
+
+		if (e.Thing.CheckClass('Dawn', AAPTR_DEFAULT, true)) {
+			e.Thing.GiveInventory('TV_VisorItem', 1); // give Visor Item to be able to control Toyko Visor
+			return;
+		}
+
+		if (e.Thing.CheckClass('SelacoSmoke', AAPTR_DEFAULT, true) 
+		    || e.Thing.CheckClass('ExplosionSmoke', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('WallShrapnel', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SteamParticle', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('ImpactEffect', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('VentilationSmoke', AAPTR_DEFAULT, true)
+			|| e.Thing.CheckClass('SelacoParticle', AAPTR_DEFAULT, true)) {
+			// hide these effects if Thermal is active
+			e.Thing.GiveInventory('TV_ConditionalEffectHider', 1);
+			return;
+		} 
+
+		// DEBUG: print the class of whatever's left!
+		if (!(e.Thing.CheckClass('TV_ConditionalEffectHider', AAPTR_DEFAULT, true) || e.Thing.CheckClass('TV_Actor_VFX_Updater', AAPTR_DEFAULT, true))) {
+			console.printf("%s", e.thing.GetClassName());
+		}
+	}
+}
