@@ -14,3 +14,9 @@ addmenukey "quick switch to Motion Vision or turn visor off" "tv_smart_toggle_mo
 
 alias tv_smart_toggle_thermalvision "netevent TV_SmartToggle_ThermalVision"
 addmenukey "quick switch to Thermal Vision or turn visor off" "tv_smart_toggle_thermalvision"
+
+alias tv_installvisor "netevent TV_AddVisorItem"
+addmenukey "install tokyo visor" "tv_installvisor"
+
+alias tv_removevisor "netevent TV_RemoveVisorItem"
+addmenukey "remove tokyo visor" "tv_removevisor"

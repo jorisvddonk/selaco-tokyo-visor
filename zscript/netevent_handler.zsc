@@ -55,6 +55,48 @@ class TV_NetEventHandler : StaticEventHandler {
             }
             return;
         }
+
+        if(e.name == "TV_AddVisorItem") {
+            PlayerPawn pawn = players[e.player].mo;
+            let d = Dawn(pawn);
+            if((d) && d.countInv("TV_VisorItem") == 0) {
+                d.GiveInventory('TV_VisorItem', 1); // give Visor Item to be able to control Toyko Visor
+            }
+            return;
+        }
+
+        if(e.name == "TV_RemoveVisorItem") {
+            PlayerPawn pawn = players[e.player].mo;
+            let d = Dawn(pawn);
+            if((d) && d.countInv("TV_VisorItem") > 0) {
+                d.SetInventory('TV_VisorItem', 0);
+            }
+            // remove TV_Hudhandler
+            let dest = EventHandler.find("TV_HudHandler");
+            if (dest) {
+                dest.destroy();
+            }
+            // remove TV_MonsterModifier
+            dest = EventHandler.find("TV_MonsterModifier");
+            if (dest) {
+                dest.destroy();
+            }
+            // remove all TV_Actor_VFX_Updater
+            TV_Actor_VFX_Updater updater;
+            ThinkerIterator updaterList = ThinkerIterator.Create("TV_Actor_VFX_Updater");
+            while (updater = TV_Actor_VFX_Updater(updaterList.Next()))
+            {
+                updater.Destroy();
+            }
+            // remove all TV_ConditionalEffectHider
+            TV_ConditionalEffectHider hider;
+            ThinkerIterator hiderList = ThinkerIterator.Create("TV_ConditionalEffectHider");
+            while (hider = TV_ConditionalEffectHider(hiderList.Next()))
+            {
+                hider.Destroy();
+            }
+            return;
+        }
         
     }
 }

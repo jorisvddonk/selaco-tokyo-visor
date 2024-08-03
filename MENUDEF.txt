@@ -6,6 +6,10 @@ AddOptionMenu "ModOptionsMenu"
 
 OptionMenu "TokyoVisorOptions"
 {
+    TooltipCommand "$TOKYO_VISOR_CONTROL_TITLE_INSTALL", "$TOKYO_VISOR_CONTROL_TITLE_INSTALL_DESC", "", "tv_installvisor"
+    TooltipCommand "$TOKYO_VISOR_CONTROL_TITLE_UNINSTALL", "$TOKYO_VISOR_CONTROL_TITLE_UNINSTALL_DESC", "", "tv_removevisor"
+
+    StaticText " "
     Control "$TOKYO_VISOR_CONTROL_TITLE_VISION_ACTIVE", "tv_togglevisor"
     Control "$TOKYO_VISOR_CONTROL_TITLE_VISION_MODE", "tv_changevisormode"
 
