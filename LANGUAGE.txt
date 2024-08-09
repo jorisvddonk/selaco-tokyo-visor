@@ -3,8 +3,8 @@
 TOKYO_VISOR_MOD_DESCRIPTION="[[BETA]] TOKYO Visor augments Dawn's vision for maximum performance in all combat situations. It features Night Vision for improved visibility in low light, Motion Vision to detect moving objects, and Thermal Vision to reveal heat signatures. Inspired by the 2009 HL2 mod NEOTOKYO.";
 TOKYO_VISOR_MOD_README="Readme";
 
-TOKYO_VISOR_CONTROL_TITLE_INSTALL="Add Tokyo Visor to current save game";
-TOKYO_VISOR_CONTROL_TITLE_INSTALL_DESC="Tokyo Visor will automatically be added to new games you start, but if it's not working or you want to load it into an existing game, press this button! Note that functionality may not fully work until a new map is loaded.";
+TOKYO_VISOR_CONTROL_TITLE_INSTALL="Fix Tokyo Visor / Add Tokyo Visor to current save game";
+TOKYO_VISOR_CONTROL_TITLE_INSTALL_DESC="Tokyo Visor will *not* automatically be added to new games you start, so if you want to add it to a save game or fix it if it's broken (when upgrading to a newer version of the mod), press this button! Note that full functionality may not fully work until a new map is loaded.";
 TOKYO_VISOR_CONTROL_TITLE_UNINSTALL="Remove Tokyo Visor from current save game";
 TOKYO_VISOR_CONTROL_TITLE_UNINSTALL_DESC="Removes Tokyo Visor from the current save game. Please press this button before uninstalling the mod, and then manually create a new save game, otherwise save games won't load after the mod is uninstalled!";
 
