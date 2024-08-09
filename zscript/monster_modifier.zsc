@@ -12,7 +12,12 @@ class TV_StaticMonsterModifier : StaticEventHandler {
 			console.printf("WARN (TokyoVisor): %s has STYLE_NONE RenderStyle, which is not supported by TV_Actor_VFX_Updater; not adding TV_Actor_VFX_Updater!", thing.GetClassName());
 			return;
 		}
-		console.printf("DEBUG (TokyoVisor): Adding VFX updater to %s", thing.GetClassName());
+		let cv = CVar.FindCVar("tokyo_visor_debuginfo");
+		if (cv) { 
+			if (cv.GetBool()) {
+				console.printf("DEBUG (TokyoVisor): Adding VFX updater to %s", thing.GetClassName());
+			}
+		}
 		thing.GiveInventory('TV_Actor_VFX_Updater', 1);
 		let updater = TV_Actor_VFX_Updater(thing.FindInventory('TV_Actor_VFX_Updater'));
 		if (updater) {

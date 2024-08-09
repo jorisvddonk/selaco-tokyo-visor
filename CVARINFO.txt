@@ -1,1 +1,2 @@
 server noarchive bool tokyo_visor_enabled = false;
+nosave bool tokyo_visor_debuginfo = false;
