@@ -1,6 +1,11 @@
 Class TV_Hudhandler : EventHandler
 {
-    override void RenderOverlay(RenderEvent e)
+    // DEPRECATED - do not add any code here!
+}
+
+Class TV_StaticHudhandler : StaticEventHandler
+{
+    override void UiTick ()
     {
         PlayerInfo p = players[consoleplayer];
 		PlayerPawn pawn = p.mo;
@@ -19,6 +24,21 @@ Class TV_Hudhandler : EventHandler
             Shader.SetEnabled(players[consoleplayer], "Nightvision", nightvision_enabled);
             Shader.SetEnabled(players[consoleplayer], "Motionvision", motionvision_enabled);
             Shader.SetEnabled(players[consoleplayer], "Thermalvision", thermalvision_enabled);
+        }
+    }
+
+    override void OnRegister()
+    {
+        console.printf("Registered TV_StaticHudhandler");
+    }
+
+    override void WorldLoaded (WorldEvent e)
+    {
+        // remove any lingering TV_Hudhandler left over from previous versions of this mod
+        let dest = EventHandler.find("TV_HudHandler");
+        if (dest) {
+            console.printf("Removing lingering TV_HudHandler");
+            dest.destroy();
         }
     }
 }

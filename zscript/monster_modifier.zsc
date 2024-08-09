@@ -1,4 +1,8 @@
 class TV_MonsterModifier : EventHandler {
+	// DEPRECATED - do not add any code here!
+}
+
+class TV_StaticMonsterModifier : StaticEventHandler {
 
 	/**
 	Add a TV_Actor_VFX_Updater inventory item to a Thing, and check some preconditions.
@@ -23,6 +27,12 @@ class TV_MonsterModifier : EventHandler {
 
 	override void WorldThingSpawned(WorldEvent e) {
 		if(!e.Thing) { return; }
+		let cv = CVar.FindCVar("tokyo_visor_enabled");
+		if (cv) { 
+			if (!cv.GetBool()) {
+				return;
+			}
+		}
 
 		// movement with persistent heat signatures:
 		if(!e.Thing.CheckClass('GrenadeDestination', AAPTR_DEFAULT, true)
@@ -120,4 +130,14 @@ class TV_MonsterModifier : EventHandler {
 		}
 		*/
 	}
+
+    override void WorldLoaded (WorldEvent e)
+    {
+        // remove any lingering TV_MonsterModifier left over from previous versions of this mod
+        let dest = EventHandler.find("TV_MonsterModifier");
+        if (dest) {
+            console.printf("Removing lingering TV_MonsterModifier");
+            dest.destroy();
+        }
+    }
 }

@@ -6,6 +6,8 @@ class TV_NetEventHandler : StaticEventHandler {
         if((d) && d.countInv("TV_VisorItem") > 0) {
             TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
             return visor;
+        } else {
+            console.printf("WARN (TV): TV_VisorItem missing!!");
         }
         return null;
     }
@@ -57,15 +59,21 @@ class TV_NetEventHandler : StaticEventHandler {
         }
 
         if(e.name == "TV_AddVisorItem") {
+            console.printf("Initializing Tokyo Visor...");
+            CVar.FindCVar("tokyo_visor_enabled").SetBool(true);
             PlayerPawn pawn = players[e.player].mo;
             let d = Dawn(pawn);
             if((d) && d.countInv("TV_VisorItem") == 0) {
                 d.GiveInventory('TV_VisorItem', 1); // give Visor Item to be able to control Toyko Visor
+            } else {
+                console.printf("Already have TV_VisorItem");
             }
             return;
         }
 
         if(e.name == "TV_RemoveVisorItem") {
+            console.printf("Removing Tokyo Visor...");
+            CVar.FindCVar("tokyo_visor_enabled").SetBool(false);
             PlayerPawn pawn = players[e.player].mo;
             let d = Dawn(pawn);
             if((d) && d.countInv("TV_VisorItem") > 0) {
