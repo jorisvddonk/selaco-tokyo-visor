@@ -100,6 +100,7 @@ class TV_NetEventHandler : StaticEventHandler {
             return;
         }
 
+        // Install Tokyo Visor (NOTE: Also handled in TV_StaticMonsterModifier!)
         if(e.name == "TV_AddVisorItem") {
             console.printf("Initializing Tokyo Visor...");
             PlayerPawn pawn = players[e.player].mo;
@@ -138,4 +139,9 @@ class TV_NetEventHandler : StaticEventHandler {
             console.printf("Visor should be fixed now; if not, please 'fix' the visor via Mod Options!");
         }
     }
+
+	override void OnRegister()
+	{
+		SetOrder(9);
+	}
 }
