@@ -7,7 +7,7 @@ class TV_NetEventHandler : StaticEventHandler {
             TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
             return visor;
         } else {
-            console.printf("WARN (TV): TV_VisorItem missing!!");
+            console.printf("Tokyo Visor warning: TV_VisorItem missing! - If you want to use Tokyo Visor, please add it to your savegame via Mod Options!");
         }
         return null;
     }
