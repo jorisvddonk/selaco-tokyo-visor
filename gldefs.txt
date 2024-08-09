@@ -1,23 +1,23 @@
 HardwareShader PostProcess scene
 {
 	Name "Nightvision"
-	Shader "shaders/glsl/Nightvision.fp" 330
-	Texture NoiseTexture "textures/noise.png"
+	Shader "tokyo_visor/shaders/glsl/Nightvision.fp" 330
+	Texture NoiseTexture "tokyo_visor/textures/noise.png"
 	Uniform float timer
 }
 
 HardwareShader PostProcess scene
 {
 	Name "Motionvision"
-	Shader "shaders/glsl/Motionvision.fp" 330
-	Texture NoiseTexture "textures/noise.png"
+	Shader "tokyo_visor/shaders/glsl/Motionvision.fp" 330
+	Texture NoiseTexture "tokyo_visor/textures/noise.png"
 	Uniform float timer
 }
 
 HardwareShader PostProcess scene
 {
 	Name "Thermalvision"
-	Shader "shaders/glsl/Thermalvision.fp" 330
-	Texture NoiseTexture "textures/noise.png"
+	Shader "tokyo_visor/shaders/glsl/Thermalvision.fp" 330
+	Texture NoiseTexture "tokyo_visor/textures/noise.png"
 	Uniform float timer
 }
