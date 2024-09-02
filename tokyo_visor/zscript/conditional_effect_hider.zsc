@@ -4,6 +4,7 @@ class TV_ConditionalEffectHider : Inventory
     float prevalpha;
     float prevscalex;
     float prevscaley;
+	bool wasenabled;
 
 	default {
 		Inventory.MaxAmount 1;
@@ -21,15 +22,20 @@ class TV_ConditionalEffectHider : Inventory
 			bool motionvision_enabled = visor.visorActive && visor.visorMode == TV_MOTIONVISION;
 			bool thermalvision_enabled = visor.visorActive && visor.visorMode == TV_THERMALVISION;
 
-			if (!visor.visorActive || nightvision_enabled) {
+			if (!visor.visorActive && wasenabled) {
 				owner.bBright = false; // TODO: properly reset / determine elsewhere?
 				owner.A_SetRenderStyle(1.0, prevstyle);
 				owner.A_SETSCALE(prevscalex, prevscaley);
 				owner.alpha = prevalpha;
+				wasenabled = false;
 				return Super.Tick();
 			}
 
 			if (motionvision_enabled) {
+				if (!wasenabled) {
+					storeStyles();
+					wasenabled = true;
+				}
 				if (owner.CheckClass('WallShrapnel', AAPTR_DEFAULT, true)
 				    || owner.CheckClass('ImpactEffect', AAPTR_DEFAULT, true)
 					|| owner.CheckClass('SelacoParticle', AAPTR_DEFAULT, true)) {
@@ -46,6 +52,10 @@ class TV_ConditionalEffectHider : Inventory
 			}
 
 			if (thermalvision_enabled) {
+				if (!wasenabled) {
+					storeStyles();
+					wasenabled = true;
+				}
 				owner.A_SetRenderStyle(0.01, STYLE_TRANSLUCENT);
 				owner.A_SETSCALE(0.01);
 				owner.alpha = 0.01;
@@ -54,12 +64,16 @@ class TV_ConditionalEffectHider : Inventory
 		}
 	}
 
-	override void PostBeginPlay()
-	{
+	void storeStyles() {
 		prevstyle = owner.GetRenderStyle();
         prevalpha = owner.alpha;
         prevscalex = owner.scale.x;
         prevscaley = owner.scale.y;
+	}
+
+	override void PostBeginPlay()
+	{
+		wasenabled = false;
         Tick();
 	}
 
