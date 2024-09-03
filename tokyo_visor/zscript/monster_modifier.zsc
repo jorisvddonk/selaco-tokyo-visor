@@ -33,6 +33,15 @@ class TV_StaticMonsterModifier : StaticEventHandler {
 	bool TrackActorMaybe(Actor actor) {
 		if(!actor) { return false; }
 
+		// Don't track these, ever!
+		if (
+			actor.CheckClass('RedPlasmaPuff', AAPTR_DEFAULT, true) 
+			|| actor.CheckClass('RedPlasmaParticleSpawner', AAPTR_DEFAULT, true)
+			|| actor.CheckClass('SporeMissile', AAPTR_DEFAULT, true)
+			|| actor.CheckClass('SuppressionPoint', AAPTR_DEFAULT, true)) {
+			return false;
+		}
+
 		// movement with persistent heat signatures:
 		if(!actor.CheckClass('GrenadeDestination', AAPTR_DEFAULT, true)
 		 && !actor.CheckClass('SentryGunTurret', AAPTR_DEFAULT, true)
@@ -51,11 +60,12 @@ class TV_StaticMonsterModifier : StaticEventHandler {
 		}
 
 		// no movement tracking, persistent heat signatures:
-		if(actor.CheckClass('CarFire', AAPTR_DEFAULT, true)
+		if(!actor.CheckClass('SparkX', AAPTR_DEFAULT, true) &&
+			(actor.CheckClass('CarFire', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('MegaFire', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('FireActor', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('ExplosionParticleHeavy', AAPTR_DEFAULT, true)
-			|| actor.CheckClass('ExplosionEffect', AAPTR_DEFAULT, true)) {
+			|| actor.CheckClass('ExplosionEffect', AAPTR_DEFAULT, true))) {
 			addVFXUpdater(actor, false, true, 1.0, 0.0);
 			return true;
 		}
@@ -80,9 +90,6 @@ class TV_StaticMonsterModifier : StaticEventHandler {
 			|| actor.CheckClass('Sawdrone', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('SelacoTracer', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('SentryGunTurretRocket', AAPTR_DEFAULT, true)
-			|| actor.CheckClass('RedPlasmaParticleSpawner', AAPTR_DEFAULT, true)
-			|| actor.CheckClass('GreenPlasmaParticleSpawner', AAPTR_DEFAULT, true)
-			|| actor.CheckClass('BluePlasmaParticleSpawner', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('EnemyTracerShotgun', AAPTR_DEFAULT, true)
 			|| actor.CheckClass('EnemyTracer', AAPTR_DEFAULT, true)
 			)) {
