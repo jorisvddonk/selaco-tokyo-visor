@@ -1,0 +1,163 @@
+class TV_DBGFinder : LineTracer
+{
+    array <Actor> foundActors;
+    override ETraceStatus TraceCallback()
+    {
+        if (results.HitType == TRACE_HitActor)
+        {
+            if (results.HitActor.countInv("TV_ConditionalEffectHider") > 0 || results.HitActor.countInv("TV_Actor_VFX_Updater") > 0) {
+                foundActors.push(results.HitActor);
+            }
+        }
+        return TRACE_Skip;
+    }
+}
+
+class TV_DebugMenu : SelacoGamepadMenu {
+    UILabel titleLabel;
+    StandardBackgroundContainer background;
+    UIImage textBackground;
+    UIVerticalScroll scrollView;
+    array<String> classNames;
+    int refresh;
+    
+
+    void refreshUI() {
+        scrollView.mLayout.clearManaged();
+        classNames.Clear();
+        int los = loadActorsInLineOfSight();
+        int vfxUpdaters = loadVFXUpdaters();
+        int effectHiders = loadEffectHiders();
+        titleLabel.setText(String.Format("Tracked actor count: %i effectHiders, %i vfxUpdaters", effectHiders, vfxUpdaters));
+    }
+
+    override void init(Menu parent) {
+        Super.init(parent);
+        refresh = 0;
+
+        DontDim = true;
+        DontBlur = true;
+
+        titleLabel = new("UILabel").init(
+            (0,0), (200, 42),
+            "", 
+            "K22FONT", 
+            textAlign: UIView.Align_Middle,
+            fontScale: (0.8, 0.8)
+        );
+
+        background = CommonUI.makeStandardBackgroundContainer(title: "Tokyo Visor Debug UI");
+        mainView.add(background);
+
+        textBackground = new("UIImage").init((0, 0), (760, 600), "", NineSlice.Create("graphics/options_menu/op_bbar3.png", (9,9), (14,14)));
+        textBackground.pinToParent();
+        background.add(textBackground);
+
+        titleLabel.pin(UIPin.Pin_Left, offset: 15);
+        titleLabel.pin(UIPin.Pin_Right, offset: -15);
+        titleLabel.pinHeight(UIView.Size_Min);
+        background.add(titleLabel);
+
+        scrollView = new("UIVerticalScroll").init((0,0), (0,0), 30, 24,
+            NineSlice.Create("graphics/options_menu/slider_bg_vertical.png", (14, 6), (16, 24)),
+            null,
+            UIButtonState.CreateSlices("graphics/options_menu/slider_butt.png", (8,8), (13,13)),
+            UIButtonState.CreateSlices("graphics/options_menu/slider_butt.png", (8,8), (13,13)),
+            UIButtonState.CreateSlices("graphics/options_menu/slider_butt_down.png", (8,8), (13,13)),
+            null,
+            UIButtonState.CreateSlices("graphics/options_menu/slider_butt_selected.png", (8,8), (13,13)),
+            UIButtonState.CreateSlices("graphics/options_menu/slider_butt_selected.png", (8,8), (13,13)),
+            UIButtonState.CreateSlices("graphics/options_menu/slider_butt_down_selected.png", (8,8), (13,13))
+        );
+        scrollView.scrollbar.selectButtonOnFocus = true;
+        scrollView.scrollbar.buttonSize = 20;
+        scrollView.pinToParent(10, 10, -5, -10);
+        scrollView.autoHideScrollbar = true;
+        scrollView.scrollbar.minButtonScrollSize = 60;
+        scrollView.mLayout.setPadding(20, 20, 20, 20);
+        background.add(scrollView);
+
+        refreshUI();
+
+        navigateTo(scrollView.scrollbar);
+    }
+
+    int loadActorsInLineOfSight() {
+        PlayerPawn pawn = players[0].mo;
+        let d = Dawn(pawn);
+        if (d) {
+            let tracer = new('TV_DBGFinder');
+            if (!tracer)
+            {
+                return 0;
+            }
+            Vector3 dir = (Actor.AngleToVector(d.angle, cos(d.pitch)), -sin(d.pitch));
+            Vector3 start = (d.pos.xy, d.player.viewz);
+        
+            tracer.Trace(start, pawn.CurSector, dir, PLAYERMISSILERANGE, 0);
+            int i = 0;
+            for (int i = 0; i < tracer.foundActors.Size(); i++) 
+            {
+                Actor actor = tracer.foundActors[i];
+                let item = String.Format("\c[GREEN]LineOfSight Tracked Actor:\c- %s  \c[OMNIBLUE]@ %p\c- (%i %i)", actor.GetClassName(), actor, actor.countInv("TV_ConditionalEffectHider"), actor.countInv("TV_Actor_VFX_Updater"));
+                addItem(item, actor.GetClassName());
+            }
+            return tracer.foundActors.Size();
+        }
+        return 0;
+    }
+
+    int loadEffectHiders() {
+        Thinker thinker;
+        ThinkerIterator actorList = ThinkerIterator.Create("TV_ConditionalEffectHider");
+        int i = 0;
+        while (thinker = actorList.Next())
+        {
+            Actor actor = TV_ConditionalEffectHider(thinker).owner;
+            let item = String.Format("\c[RED]TV_ConditionalEffectHider:\c- %s  \c[OMNIBLUE]@ %p\c- (%i %i)", actor.GetClassName(), actor, actor.countInv("TV_ConditionalEffectHider"), actor.countInv("TV_Actor_VFX_Updater"));
+            addItem(item, actor.GetClassName());
+            i += 1;
+        }
+        return i;
+    }
+
+    int loadVFXUpdaters() {
+        Thinker thinker;
+        ThinkerIterator actorList = ThinkerIterator.Create("TV_Actor_VFX_Updater");
+        int i = 0;
+        while (thinker = actorList.Next())
+        {
+            Actor actor = TV_Actor_VFX_Updater(thinker).owner;
+            let item = String.Format("\c[PURPLE]TV_Actor_VFX_Updater:\c- %s  \c[OMNIBLUE]@ %p\c- (%i %i)", actor.GetClassName(), actor, actor.countInv("TV_ConditionalEffectHider"), actor.countInv("TV_Actor_VFX_Updater"));
+            addItem(item, actor.GetClassName());
+            i += 1;
+        }
+        return i;
+    }
+    
+    void addItem(String item, String className) {
+        item = item.filter();
+        if(item == "" || item == " ") {
+            return;
+        }
+        UIHorizontalLayout layout;
+        layout = new("UIHorizontalLayout").init((0,0), (500, 100));
+        layout.pin(UIPin.Pin_Left);
+        layout.pin(UIPin.Pin_Bottom, UIPin.Pin_Top, offset: -20);
+        layout.pin(UIPin.Pin_Right);
+        layout.pinHeight(24);
+        layout.itemSpacing = 10;
+        
+        Font fnt = "PDA16FONT";
+        double lheight = 24;
+
+        let label = new("UILabel").init((0,0), (100, lheight), item, fnt, textAlign: UIView.Align_Left);
+        label.multiline = false;
+        label.pin(UIPin.Pin_Left, offset: 10);
+        layout.addManaged(label);
+
+        scrollView.mLayout.addManaged(layout);
+        classNames.Push(className);
+    }
+
+}

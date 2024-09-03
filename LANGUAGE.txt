@@ -10,6 +10,7 @@ TOKYO_VISOR_CONTROL_TITLE_UNINSTALL_DESC="Removes Tokyo Visor from the current s
 
 TOKYO_VISOR_CONTROL_TITLE_VISION_ACTIVE="Toggle Tokyo Visor on/off";
 TOKYO_VISOR_CONTROL_TITLE_VISION_MODE="Toggle Tokyo Visor mode";
+TOKYO_VISOR_CONTROL_TITLE_DEBUGGER="Show Tokyo Visor Debug UI";
 
 TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_NIGHTVISION="Quick Switch to Night Vision and turn Visor on, tap again to turn off";
 TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_MOTIONVISION="Quick Switch to Motion Vision and turn Visor on, tap again to turn off";

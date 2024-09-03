@@ -55,6 +55,27 @@ class TV_NetEventHandler : StaticEventHandler {
     }
    
     override void NetworkProcess(ConsoleEvent e) {
+        // Debug
+        if(e.name == "TV_Debug") {
+            Menu.SetMenu("TV_DebugMenu");
+            PlayerPawn pawn = players[e.player].mo;
+            let d = Dawn(pawn);
+            if (d) {
+                let tracer = new('TV_DBGFinder');
+                if (!tracer)
+                {
+                    return;
+                }
+                Vector3 dir = (Actor.AngleToVector(d.angle, cos(d.pitch)), -sin(d.pitch));
+                Vector3 start = (d.pos.xy, d.player.viewz);
+            
+                tracer.Trace(start, pawn.CurSector, dir, PLAYERMISSILERANGE, 0);
+            } else {
+                console.printf("WARN: could not find player for debugtool!");
+            }
+            return;
+        }
+
         // Toggle Visor
         if(e.name == "TV_ToggleVisor") {
             TV_VisorItem visor = getVisor(e);

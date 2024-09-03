@@ -17,4 +17,7 @@ OptionMenu "TokyoVisorOptions"
     Control "$TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_NIGHTVISION", "tv_smart_toggle_nightvision"
     Control "$TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_MOTIONVISION", "tv_smart_toggle_motionvision"
     Control "$TOKYO_VISOR_CONTROL_TITLE_SMART_TOGGLE_THERMALVISION", "tv_smart_toggle_thermalvision"
+
+    StaticText " "
+    Control "$TOKYO_VISOR_CONTROL_TITLE_DEBUGGER", "tv_debug"
 }
