@@ -16,6 +16,9 @@ class TV_ConditionalEffectHider : Inventory
 		PlayerPawn pawn = p.mo;
 		let d = Dawn(pawn);
 		if((d) && d.countInv("TV_VisorItem") > 0) {
+			if (owner == null) {
+				return;
+			}
 			TV_VisorItem visor = TV_VisorItem(d.FindInventory("TV_VisorItem"));
 		
 			bool nightvision_enabled = visor.visorActive && visor.visorMode == TV_NIGHTVISION;
@@ -68,6 +71,9 @@ class TV_ConditionalEffectHider : Inventory
 	}
 
 	void storeStyles() {
+		if (owner == null) {
+			return;
+		}
 		prevstyle = owner.GetRenderStyle();
         prevalpha = owner.alpha;
         prevscalex = owner.scale.x;
