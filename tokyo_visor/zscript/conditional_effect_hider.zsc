@@ -28,7 +28,8 @@ class TV_ConditionalEffectHider : Inventory
 				owner.A_SETSCALE(prevscalex, prevscaley);
 				owner.alpha = prevalpha;
 				wasenabled = false;
-				return Super.Tick();
+				Super.Tick();
+				return;
 			}
 
 			if (motionvision_enabled) {
@@ -48,7 +49,8 @@ class TV_ConditionalEffectHider : Inventory
 					owner.A_SetRenderStyle(1.0, STYLE_NONE);
 					owner.bBright = false;
 				}
-				return Super.Tick();
+				Super.Tick();
+				return;
 			}
 
 			if (thermalvision_enabled) {
@@ -59,7 +61,8 @@ class TV_ConditionalEffectHider : Inventory
 				owner.A_SetRenderStyle(0.01, STYLE_TRANSLUCENT);
 				owner.A_SETSCALE(0.01);
 				owner.alpha = 0.01;
-				return Super.Tick();
+				Super.Tick();
+				return;
 			}
 		}
 	}
